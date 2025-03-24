@@ -1,0 +1,13 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# IDE and editor settings
+.vscode/
+
+# Linting
+eslintcache
+stylelintcache
+
