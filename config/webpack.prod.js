@@ -36,8 +36,8 @@ module.exports = {
   output: {
     clean: true, // 每次构建时清理/dist目录
     path: path.resolve(__dirname, "../dist"), // 所有文件输出到dist目录下
-    filename: "static/js/[name].js", // 将js文件输出到dist/static/js/目录下
-    chunkFilename: "static/js/[name].chunk.js", // 动态导入导出资源命名方式
+    filename: "static/js/[name].[contenthash:8].js", // 将js文件输出到dist/static/js/目录下
+    chunkFilename: "static/js/[name].[contenthash:8].chunk.js", // 动态导入导出资源命名方式
     assetModuleFilename: "static/media/[name].[hash][ext]", // 图片、字体等资源命名方式
   },
   module: {
@@ -106,8 +106,8 @@ module.exports = {
     }),
     // css抽离
     new MiniCssExtractPlugin({
-      filename: "static/css/[name].css",
-      chunkFilename: "static/css/[name].chunk.css",
+      filename: "static/css/[name].[contenthash:8].css",
+      chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
     }),
     // ESlint
     new ESLintPlugin({
@@ -129,8 +129,13 @@ module.exports = {
       // 多进程压缩
       new TerserPlugin({ parallel: threads }),
     ],
+    // 对所有模块进行分割
     splitChunks: {
-      chunks: "all", // 对所有模块进行分割
+      chunks: "all",
+    },
+    // 对runtime文件进行单独打包
+    runtimeChunk: {
+      name: (entrypoint) => `runtime~${entrypoint.name}`,
     },
   },
   resolve: {
