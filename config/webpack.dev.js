@@ -22,7 +22,7 @@ module.exports = {
           // js
           {
             test: /\.m?js$/,
-            exclude: /(node_modules|bower_components)/,
+            include: path.resolve(__dirname, "../src"),
             use: {
               loader: "babel-loader",
             },
@@ -67,6 +67,7 @@ module.exports = {
     }),
     // ESlint
     new ESLintPlugin({
+      exclude: "/node_modules/", // 忽略node_modules目录下的文件
       context: path.resolve(__dirname, "../src"), // 检查src目录下的文件
     }),
   ],
