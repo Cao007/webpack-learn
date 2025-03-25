@@ -1,8 +1,13 @@
 const path = require("path");
+const os = require("os");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ESLintPlugin = require("eslint-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+
+// 获取cpu核数
+const threads = os.cpus().length;
 
 // 获取处理样式的Loaders
 const getStyleLoaders = (preProcessor) => {
@@ -50,11 +55,22 @@ module.exports = {
           {
             test: /\.m?js$/,
             include: path.resolve(__dirname, "../src"),
-            loader: "babel-loader",
-            options: {
-              cacheDirectory: true, // 开启babel缓存
-              cacheCompression: false, // 关闭缓存文件压缩
-            },
+            use: [
+              {
+                loader: "thread-loader", // 开启多进程
+                options: {
+                  workers: threads, // 进程数
+                },
+              },
+              {
+                loader: "babel-loader",
+                options: {
+                  cacheDirectory: true, // 开启babel缓存
+                  cacheCompression: false, // 关闭缓存文件压缩
+                  plugins: ["@babel/plugin-transform-runtime"], // 减少代码体积
+                },
+              },
+            ],
           },
           // 图片资源
           {
@@ -98,14 +114,22 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "static/css/[name].css",
     }),
-    // css压缩
-    new CssMinimizerPlugin(),
     // ESlint
     new ESLintPlugin({
       exclude: "/node_modules/", // 忽略node_modules目录下的文件
       context: path.resolve(__dirname, "../src"), // 检查src目录下的文件
+      threads: threads, // 开启多进程
     }),
   ],
+  optimization: {
+    minimize: true, // 开启代码压缩
+    minimizer: [
+      // css压缩
+      new CssMinimizerPlugin(),
+      // 多进程压缩
+      new TerserPlugin({ parallel: threads }),
+    ],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "../src"),
