@@ -23,8 +23,10 @@ module.exports = {
           {
             test: /\.m?js$/,
             include: path.resolve(__dirname, "../src"),
-            use: {
-              loader: "babel-loader",
+            loader: "babel-loader",
+            options: {
+              cacheDirectory: true, // 开启babel缓存
+              cacheCompression: false, // 关闭缓存文件压缩
             },
           },
           // 图片资源
