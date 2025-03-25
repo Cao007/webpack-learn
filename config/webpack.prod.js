@@ -5,6 +5,7 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const PreloadWebpackPlugin = require("@vue/preload-webpack-plugin");
 
 // 获取cpu核数
 const threads = os.cpus().length;
@@ -113,6 +114,11 @@ module.exports = {
       exclude: "/node_modules/", // 忽略node_modules目录下的文件
       context: path.resolve(__dirname, "../src"), // 检查src目录下的文件
       threads: threads, // 开启多进程
+    }),
+    // 预加载
+    new PreloadWebpackPlugin({
+      rel: "preload",
+      as: "script",
     }),
   ],
   optimization: {
