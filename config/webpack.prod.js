@@ -25,6 +25,7 @@ const getStyleLoaders = (preProcessor) => {
 
 module.exports = {
   mode: "production",
+  devtool: "source-map",
   entry: "./src/main.js",
   output: {
     path: path.resolve(__dirname, "../dist"), // 所有文件输出到dist目录下
