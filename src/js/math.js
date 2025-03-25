@@ -1,3 +1,3 @@
-export default function sum2(...args) {
+export function sum(...args) {
   return args.reduce((acc, curr) => acc + curr, 0);
 }
